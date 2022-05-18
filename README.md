@@ -1,6 +1,6 @@
 ### Расширение Google Chrome для поиска по сайту [reshenie-soft.ru/doc](https://reshenie-soft.ru/doc/)
 
-## [`Скачать расширение`](/Polovinalam/reshenieSearchAddon/archive/refs/heads/master.zip "DOWNLOAD ZIP") 
+## [`Скачать расширение`](https://github.com/Polovinalam/reshenieSearchAddon/archive/refs/heads/master.zip "DOWNLOAD ZIP") 
 
 Установка: Настройки (сверху справа) -> Дополнительные инструменты -> Расширения -> Сверху справа установить "Режим разработчика" -> Загрузить распакованное расширение -> Выбрать папку с расширением.
 

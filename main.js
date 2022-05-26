@@ -235,7 +235,7 @@ const searchIframe = (frame, text) => {
                     
                     pattern = elem[i].innerHTML.toUpperCase();
                     ind = pattern.indexOf(textUpper);
-                    colorElement = pattern.substring(ind, textUpper.length + ind); 
+                    colorElement = elem[i].innerHTML.substring(ind, textUpper.length + ind); 
                     elementBegin = elem[i].innerHTML.substring(0, ind); 
                     elementEnd = elem[i].innerHTML.substring(textUpper.length + ind);
                     elem[i].innerHTML = elementBegin + '<span style="background-color:#fc776d">'+ colorElement + '</span>' + elementEnd;

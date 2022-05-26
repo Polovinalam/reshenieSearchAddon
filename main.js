@@ -48,8 +48,10 @@ function ready() {
     const elements = document.getElementsByTagName("*");
     elements[0].prepend(divFrame);
     elements[0].prepend(searchPanel);
-
-    startAll();
+    
+    window.onload = function(){
+        startAll();
+    }
 }
 const n = 'none';
 const b = 'block';
@@ -229,15 +231,22 @@ const searchIframe = (frame, text) => {
                         elem[i].style.display = 'table'
                         if (elem[i].className == 'MsoIndex1' ||elem[i].className == 'MsoMessageHeader'){elem[i].style.color = '#4157f5'}
                     }
-                    elem[i].style.backgroundColor = '#fcfc6d';
-                }
+                    elem[i].style.backgroundColor = '#fbeded';
+                    
+                    pattern = elem[i].innerHTML.toUpperCase();
+                    ind = pattern.indexOf(textUpper);
+                    colorElement = pattern.substring(ind, textUpper.length + ind); 
+                    elementBegin = elem[i].innerHTML.substring(0, ind); 
+                    elementEnd = elem[i].innerHTML.substring(textUpper.length + ind);
+                    elem[i].innerHTML = elementBegin + '<span style="background-color:#fc776d">'+ colorElement + '</span>' + elementEnd;
+                 }
             }
         }
         elemA = iframeDoc.getElementsByTagName('a');
         for (let i = 0; i < elemA.length; i++) {
             if (elemA[i].innerText.toUpperCase().includes(textUpper)) {
                 if (textUpper !== '' && textUpper.length > 1) {
-                    elemA[i].style.backgroundColor = '#fcfc6d';
+                    elemA[i].style.backgroundColor = '#fbeded';
                 }
             }
         }

@@ -80,7 +80,7 @@ function onSearchclickPage(substring) {
                 answerBlock.innerHTML += '<p>Результаты поиска: <b class="attention">По документам</b></p>';
                 answerBlock.style.paddingBottom = '20px';           
             }  
-            answerDiv.innerHTML += '<div class="block-link"><a class="link" href="' + loadPage[i][2].pageUrl + '"target="iframe_link">' + (loadPage[i][2].pageName.length > 0 ? loadPage[i][2].pageName : 'НАЗВАНИЕ ОТСУТСТВУЕТ') + '</a></div>';
+            answerDiv.innerHTML += '<div class="block-link" ><a class="link" href="' + loadPage[i][2].pageUrl + '"target="iframe_link">' + (loadPage[i][2].pageName.length > 0 ? loadPage[i][2].pageName : 'НАЗВАНИЕ ОТСУТСТВУЕТ') + '</a></div>';
             answerBlock.appendChild(answerDiv);
             if (x == 1) {
                 divFrame.style.display = b;
@@ -219,8 +219,6 @@ function getDocumentByUrl(url, callback, argsOb) {
             callback(xhr.response, argsOb);
         }
     }
-    
-   
 }
  
 //событие при изменении input
@@ -263,7 +261,15 @@ divFrame.onclick = function (e) {
 //при клике по ссылкам поиска
 document.addEventListener("click", (e) => {
     target = e.target
-    if (target.className == 'link') {
+   let link = document.getElementsByTagName('a');
+    for(i=0; i < link.length; i++)
+     {
+         if(link[i] == target){
+            target.classList.add('link_active')
+         }else{link[i].classList.remove('link_active')}; 
+     }
+    if (target.className.includes('link')) {
+        target.classList.add('link_viewed')
         divFrame.style.display = b;
         iframe.style.display = b;
         frame = document.getElementsByTagName('iframe')[0];

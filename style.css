@@ -132,6 +132,7 @@
     background-color: #b2eb60;
 }
 
+
 .link {
     color: #408ec5;
     padding: 3px 0;
@@ -143,7 +144,12 @@
     font-weight: bold;
     text-align: justify;
 }
-
+.link_viewed{
+    color: #eb5a06;
+}
+.link_active{
+    color: #ff69b4;
+}
 .link::after {
     content: "";
     height: 100%;

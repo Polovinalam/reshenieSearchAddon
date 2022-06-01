@@ -187,6 +187,7 @@
     display: none;
 }
 
-.highlight {
-    background-color: #fc776d;
+.attention {
+    background-color: #fa9c66;
+    color: #42393a;
 }

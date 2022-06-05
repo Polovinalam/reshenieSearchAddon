@@ -6,37 +6,44 @@ let clearBtn = document.createElement('input');
 const input = document.createElement('input');
 let iframe = document.createElement('iframe');
 let divFrame = document.createElement('div');
- 
+// let counterHrefP = document.createElement('a');
+// let counterHrefM = document.createElement('a');
+
 let loadTreads = [];
-let loadPage = []
+let loadPage = [];
 let loadThreadsCounter = 0;
 let loadPageCounter = 0;
 let enableSearch = false;
- 
+let arrAnchor = [];
+
 document.addEventListener("DOMContentLoaded", ready);
- 
+
 function ready() {
     searchPanel.setAttribute("id", "mainSearchPanel");
     searchBtn.setAttribute("id", "mainSearchBtn");
     searchBtn.type = 'button';
     searchBtn.value = "Поиск";
- 
+
     clearBtn.setAttribute("id", "clearBtn");
     clearBtn.type = 'button';
     clearBtn.value = "X";
     clearBtn.title = "Очистить/вернуться к ручному поиску";
     clearBtn.addEventListener("click", () => { onClear(); });
- 
+
     answerBlock.setAttribute("id", "answer");
     answerBlock.appendChild(answerDiv);
     answerDiv.setAttribute('class', 'block-answer');
- 
+
     divFrame.className = 'block-frame';
     divFrame.appendChild(iframe);
+    // searchPanel.appendChild(counterHrefP);
+    // searchPanel.appendChild(counterHrefM);
+    // counterHrefP.classList = 'counter top-href';
+    // counterHrefM.classList = 'counter bottom-href';
     iframe.name = "iframe_link";
     iframe.className = "block-frame__iframe"
- 
-    searchBtn.addEventListener("click", () => { onSearchclickPage(input.value.length > 0 ? input.value :'Введите что-нибудь'); });
+
+    searchBtn.addEventListener("click", () => { onSearchclickPage(input.value.length > 0 ? input.value.trim() : 'Введите что-нибудь'); });
     searchBtn.classList.add("searchBlock");
     input.setAttribute("id", "mainInput");
     input.setAttribute("placeholder", "Введите что-нибудь");
@@ -46,18 +53,18 @@ function ready() {
     searchPanel.appendChild(clearBtn);
     searchPanel.appendChild(input);
     searchPanel.appendChild(answerBlock);
- 
+
     const elements = document.getElementsByTagName("*");
     elements[0].prepend(divFrame);
     elements[0].prepend(searchPanel);
- 
+
     window.onload = function () {
         startAll();
     }
 }
 const n = 'none';
 const b = 'block';
- 
+
 function onClear() {
     answerDiv.innerHTML = "";
     answerBlock.innerHTML = "";
@@ -76,10 +83,10 @@ function onSearchclickPage(substring) {
         let elem = loadPage[i][1];
         if (elem.toUpperCase().includes(substring.toUpperCase())) {
             x++;
-            if (x == 1 ){
+            if (x == 1) {
                 answerBlock.innerHTML += '<p>Результаты поиска: <b class="attention">По документам</b></p>';
-                answerBlock.style.paddingBottom = '20px';           
-            }  
+                answerBlock.style.paddingBottom = '3px';
+            }
             answerDiv.innerHTML += '<div class="block-link" ><a class="link" href="' + loadPage[i][2].pageUrl + '"target="iframe_link">' + (loadPage[i][2].pageName.length > 0 ? loadPage[i][2].pageName : 'НАЗВАНИЕ ОТСУТСТВУЕТ') + '</a></div>';
             answerBlock.appendChild(answerDiv);
             if (x == 1) {
@@ -93,22 +100,23 @@ function onSearchclickPage(substring) {
         answerBlock.innerHTML += "<p>По запросу <b>" + substring + "</b> ничего не найдено.</p>";
         answerBlock.style.paddingBottom = '0';
     }
- 
+
 }
 function onSearchClick(substring) {
     if (!enableSearch) return;
+    // console.log(substring);
     answerBlock.innerHTML = "";
     let x = 0;
     answerDiv.innerHTML = "";
     answerBlock.style.paddingBottom = '0';
-    
+
     for (let i = 0; i < loadTreads.length; i++) {
         let elem = loadTreads[i][3];
         if (elem.toUpperCase().includes(substring.toUpperCase())) {
             x++;
             if (x == 1) {
                 answerBlock.innerHTML += '<p>Результаты поиска: <b class="attention">По разделам</b></p>';
-                answerBlock.style.paddingBottom = '20px';
+                answerBlock.style.paddingBottom = '3px';
             }
             answerDiv.innerHTML += '<div class="block-link"><a class="link" href="' + window.location.href + encodeURI(loadTreads[i][1].replace(/%20/g, '+')) + "\r\n" + '"target="iframe_link">' + loadTreads[i][2][0]  /*+ loadTreads[i][1]*/ + '</a></div>';
             answerBlock.appendChild(answerDiv);
@@ -119,15 +127,15 @@ function onSearchClick(substring) {
             }
         }
     }
- 
+
     if (x == 0) {
         answerBlock.innerHTML += "<p>По запросу <b>" + substring + "</b> ничего не найдено.</p>";
         answerBlock.style.paddingBottom = '0';
     }
- 
+
 }
- 
-const parseAllUrlds = (documentText,url) => {
+
+const parseAllUrlds = (documentText, url) => {
     documentText = documentText.getElementsByTagName("td");
     let massHtml = "";
     for (let i = 0; i < documentText.length; i++) {
@@ -149,12 +157,12 @@ const parseAllUrlds = (documentText,url) => {
         let origLinkText = newUrl[1];
         newUrl = newUrl[2].split("\"")[0];
         if (newUrl.length !== 0) {
-            loadTreads[loadTreads.length] = [loadTreads.length, newUrl, [origLinkText,url.urlID]];
+            loadTreads[loadTreads.length] = [loadTreads.length, newUrl, [origLinkText, url.urlID]];
             loadThreadsCounter++;
         }
     }
     parseAllUrldsCounter--;
- 
+
     if (parseAllUrldsCounter == 0)
         for (let i = 0; i < loadTreads.length; i++) {
             getDocumentByUrl(loadTreads[i][1], insertDocument, { threadNum: i });
@@ -166,11 +174,11 @@ const parsPage = (documentText, url) => {
         let elem = documentText[i].textContent
         loadPage[loadPage.length] = [loadPage.length, elem, url]
     }
- 
+
 }
 const insertDocument = (document, threadNumObj) => {
     loadTreads[threadNumObj.threadNum][3] = document.getElementsByTagName("html")[0].textContent;
-    if (loadThreadsCounter > 0 && loadTreads[threadNumObj.threadNum][2][1] <=2) {
+    if (loadThreadsCounter > 0 && loadTreads[threadNumObj.threadNum][2][1] <= 2) {
         try {
             let docHref = document.getElementsByTagName("a");
             for (let i = 0; i < docHref.length; i++) {
@@ -184,11 +192,11 @@ const insertDocument = (document, threadNumObj) => {
             console.log('Ошибка ' + err.name + ":" + err.message + "\n" + err.stack);
         }
     }
-    if (--loadThreadsCounter === 0){
-         searchReady();
-    }                 
+    if (--loadThreadsCounter === 0) {
+        searchReady();
+    }
 };
- 
+
 const searchReady = () => {
     enableSearch = true;
     searchBtn.classList.remove("searchBlock");
@@ -197,17 +205,17 @@ const searchReady = () => {
 let parseAllUrldsCounter = 0;
 function startAll() {
     parseAllUrldsCounter++;
-    getDocumentByUrl("https://reshenie-soft.ru/doc/left_1.htm", parseAllUrlds, {urlID: 1 });
+    getDocumentByUrl("https://reshenie-soft.ru/doc/left_1.htm", parseAllUrlds, { urlID: 1 });
     parseAllUrldsCounter++;
-    getDocumentByUrl("https://reshenie-soft.ru/doc/left_2.htm", parseAllUrlds, {urlID: 2 });
+    getDocumentByUrl("https://reshenie-soft.ru/doc/left_2.htm", parseAllUrlds, { urlID: 2 });
     parseAllUrldsCounter++;
-    getDocumentByUrl("https://reshenie-soft.ru/doc/left_4.htm", parseAllUrlds, {urlID: 3 });
+    getDocumentByUrl("https://reshenie-soft.ru/doc/left_4.htm", parseAllUrlds, { urlID: 3 });
     parseAllUrldsCounter++;
-    getDocumentByUrl("https://reshenie-soft.ru/doc/left_5.htm", parseAllUrlds, {urlID: 4 });
+    getDocumentByUrl("https://reshenie-soft.ru/doc/left_5.htm", parseAllUrlds, { urlID: 4 });
     parseAllUrldsCounter++;
-    getDocumentByUrl("https://reshenie-soft.ru/doc/left_6.htm", parseAllUrlds, {urlID: 5 });
+    getDocumentByUrl("https://reshenie-soft.ru/doc/left_6.htm", parseAllUrlds, { urlID: 5 });
 }
- 
+
 function getDocumentByUrl(url, callback, argsOb) {
     const xhr = new XMLHttpRequest();
     xhr.responseType = "document";
@@ -220,25 +228,30 @@ function getDocumentByUrl(url, callback, argsOb) {
         }
     }
 }
- 
+
 //событие при изменении input
 input.oninput = function changeInp() {
-    onSearchClick(input.value);
+    onSearchClick(input.value.trim());
     searchIframe(iframe, input.value.trim())
     answerBlock.style.display = b;
 }
 //поиск при нажатии клавиши ENTER
 input.onkeydown = function runScript(e) {
-    if ((e.which == 13 || e.keyCode == 13)&& input.value !='') {
-        onSearchclickPage(input.value);
+    if ((e.which == 13 || e.keyCode == 13) && input.value != '') {
+        onSearchclickPage(input.value.trim());
+        frame = document.getElementsByTagName('iframe')[0];
+        searchIframe(frame, input.value.trim());
         return false;
     }
     return true;
 }
 //отображение списка найденных результатов при наведении
 searchPanel.onmouseover = function (e) {
-    answerBlock.style.display = b;
-    e.scrollTop = e.scrollHeight;
+    target = e.target
+    if (!target.className.includes('counter')) {
+        answerBlock.style.display = b;
+        target.scrollTop = target.scrollHeight;
+    }
 }
 //скрытие списка найденных результатов при отводе курсора от элемента
 searchPanel.onmouseout = function (e) {
@@ -261,22 +274,29 @@ divFrame.onclick = function (e) {
 //при клике по ссылкам поиска
 document.addEventListener("click", (e) => {
     target = e.target
-   let link = document.getElementsByTagName('a');
-    for(i=0; i < link.length; i++)
-     {
-         if(link[i] == target){
-            target.classList.add('link_active')
-         }else{link[i].classList.remove('link_active')}; 
-     }
-    if (target.className.includes('link')) {
-        target.classList.add('link_viewed')
-        divFrame.style.display = b;
-        iframe.style.display = b;
-        frame = document.getElementsByTagName('iframe')[0];
-        searchIframe(frame, input.value.trim());
+    let link = document.getElementsByTagName('a');
+    if (!target.className.includes('counter')) {
+        // console.log(target.className);
+        for (i = 0; i < link.length; i++) {
+            if ((link[i] == target) && (target.className != 'counter')) {
+                target.classList.add('link_active');
+            } else { link[i].classList.remove('link_active') };
+        }
+        if ((target.className.includes('link')) && (target.className != 'counter') && (target.localName == 'a')) {
+            target.classList.add('link_viewed')
+            divFrame.style.display = b;
+            iframe.style.display = b;
+            frame = document.getElementsByTagName('iframe')[0];
+            searchIframe(frame, input.value.trim());
+        }
+    } else {
+        // console.log(arrAnchor);
     }
 });
+
 const searchIframe = (frame, text) => {
+    arrAnchor = [];
+    let x = 0;
     textUpper = text.toUpperCase();
     frame.onload = function () {
         let iframeDoc = frame.contentWindow.document;
@@ -288,8 +308,11 @@ const searchIframe = (frame, text) => {
                         elem[i].style.display = 'table'
                         if (elem[i].className == 'MsoIndex1' || elem[i].className == 'MsoMessageHeader') { elem[i].style.color = '#4157f5' }
                     }
-                    elem[i].style.backgroundColor = '#fbeded';
- 
+                    elem[i].style.backgroundColor = '#fbeded'
+                    elem[i].setAttribute('name', i);
+                    x++;
+                    // arrAnchor[x] = ['#' + i]
+
                     pattern = elem[i].innerHTML.toUpperCase();
                     ind = pattern.indexOf(textUpper);
                     colorElement = elem[i].innerHTML.substring(ind, textUpper.length + ind);
@@ -304,9 +327,17 @@ const searchIframe = (frame, text) => {
             if (elemA[i].innerText.toUpperCase().includes(textUpper)) {
                 if (textUpper !== '' && textUpper.length > 1) {
                     elemA[i].style.backgroundColor = '#fbeded';
+                    elem[i].setAttribute('id', 'a' + i);
+                    x++;
+                    // arrAnchor[x] = ['#a' + i]
+
                 }
             }
         }
     }
- 
+    // console.log(arrAnchor.length);
+    // if (arrAnchor.length >= 1) {
+    //     counterHrefM.href = arrAnchor[1][0];
+    //     counterHrefP.href = arrAnchor[1][0];
+    // }
 }

@@ -144,7 +144,7 @@ const parseAllUrlds = (documentText, url) => {
         while (elem.search("<!--") > 0) {
             elem = elem.replace(elem.slice(elem.search("<!--"), elem.search("-->") + 3), '');
         }
-        if (elem.includes("<tbody>")) continue;
+        if (elem.includes("<tbody>") && !elem.includes("2.7")) continue;
         massHtml += elem;
     }
     let str = "<script>";
